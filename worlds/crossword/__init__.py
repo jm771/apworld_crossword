@@ -7,8 +7,7 @@ from worlds.AutoWorld import WebWorld, World
 from .Items import CrosswordItem, item_table
 from .Locations import CrosswordLocation, location_table
 
-from .Options import CrosswordOptions, Crossword_option_groups
-
+from .Options import CrosswordOptions
 
 
 class CrosswordWeb(WebWorld):
@@ -22,10 +21,6 @@ class CrosswordWeb(WebWorld):
             ["Spineraks", "fariel"],
         )
     ]
-    
-    option_groups = Crossword_option_groups
-    
-    
 
 
 class CrosswordWorld(World):
@@ -40,27 +35,27 @@ class CrosswordWorld(World):
 
     item_name_to_id = {name: data.code for name, data in item_table.items()}
 
-    location_name_to_id = {name: data.id for name, data in location_table.items()}
+    location_name_to_id = location_table
 
     ap_world_version = "0.0.0"
 
 
     def create_items(self):
-        vibes = 17
+        vibes = 15
         self.multiworld.itempool += [self.create_item("Key Crossword Item") for i in range (0 + vibes, 20 + vibes)]
         self.multiworld.itempool += [self.create_item("Non-Key Crossword Item") for i in range (0, 100 - 20)]
-                
+
     def create_regions(self):        
         menu = Region("Menu", self.player, self.multiworld)
        
         menu.locations = [CrosswordLocation(self.player, key, value, menu) for key, value in location_table.items()]
 
-        N_FREEBIES = 20
+        N_FREEBIES_GENERATOR_SIDE = 10
         N_KEY_ITEMS = 20
         N_LOCATIONS = 100              
 
         for i, loc in enumerate(menu.locations):
-            n_items_required = math.ceil((i - N_FREEBIES) * N_KEY_ITEMS / (N_LOCATIONS - N_FREEBIES) )
+            n_items_required = math.ceil((i - N_FREEBIES_GENERATOR_SIDE + 1) * N_KEY_ITEMS / (N_LOCATIONS - N_FREEBIES_GENERATOR_SIDE) )
             loc.access_rule = lambda state, nitems=n_items_required: state.has("Key Crossword Item", self.player, nitems) if n_items_required > 0 else lambda state: True
         
         
