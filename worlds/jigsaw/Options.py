@@ -5,7 +5,7 @@ from Options import Choice, PerGameCommonOptions, Range, Toggle, OptionGroup, Re
 class NumberOfPieces(Range):
     """
     Approximate number of pieces in the puzzle.
-    Note that this game is more difficult than regular jigsaw puzzles, because you don't start with all pieces :)
+    Note that this game is more difficult than regular Crossword puzzles, because you don't start with all pieces :)
     Also make sure the pieces are not too small on your screen if you choose many.
     """
 
@@ -17,7 +17,7 @@ class NumberOfPieces(Range):
 class NumberOfPieceBundles(Range):
     """
     The (maximum) number of piece bundles; items that give you 1 or more pieces.
-    Having too many of these may hurt the multiworld and put too much emphasis on the jigsaw puzzle.
+    Having too many of these may hurt the multiworld and put too much emphasis on the Crossword puzzle.
     For solo games I would recommend to put this to the maximum.
     """
     
@@ -98,7 +98,7 @@ class WhichImage(Range):
     """
     Only if you selected the landscape orientation option.
     This option decides which landscape picture will be set for you. Don't worry, you can change it in the game.
-    Every number corresponds to a set image. See the images here: https://jigsaw-ap.netlify.app/images.html
+    Every number corresponds to a set image. See the images here: https://Crossword-ap.netlify.app/images.html
     """
     
     display_name = "Which image"
@@ -274,7 +274,7 @@ class ImpactOfSwapTraps(Range):
     
 class EnableClues(Toggle):
     """
-    Enable clues for the jigsaw puzzle.
+    Enable clues for the Crossword puzzle.
     If enabled, there is a button that shows the outline of pieces that can merge (unlimited uses).
     If disabled, the button is simply not there.
     """
@@ -298,7 +298,7 @@ class DeathLink(Range):
     When someone else dies, you'll get rotate traps and swap traps.
     The number you set here determines how many traps you get.
     If you set this to 0, deathlink is disabled.
-    (Jigsaw will never trigger death link.)
+    (Crossword will never trigger death link.)
     """
 
     display_name = "Death link"
@@ -308,7 +308,7 @@ class DeathLink(Range):
     
 class GridType(Choice):
     """
-    The type of grid used for the jigsaw puzzle. Square is the default and most common type.
+    The type of grid used for the Crossword puzzle. Square is the default and most common type.
     But hexagonal grids are also possible, which can make the puzzle more interesting.
     
     Also, these are meme options: all pieces are just in one row or one column.
@@ -326,7 +326,7 @@ class GridType(Choice):
     
 class GridTypeAndRotations(Choice):
     """
-    The type of grid used for the jigsaw puzzle, along with the rotation options.
+    The type of grid used for the Crossword puzzle, along with the rotation options.
     The "meme" options create really long or wide pieces in just one row or one column.
     How to rotate:
     While dragging a piece, rotate by: 1) scroll wheel, 2) R/spacebar, 3) tap on screen with second body part.
@@ -348,10 +348,10 @@ class GridTypeAndRotations(Choice):
 
 class BorderType(Choice):
     """
-    The type of border used for the jigsaw puzzle. You can change this in-game.
+    The type of border used for the Crossword puzzle. You can change this in-game.
     
-    Classic: the typical jigsaw pieces with the innies and outies.
-    Triangle: the typical jigsaw pieces where innies and outies are triangles.
+    Classic: the typical Crossword pieces with the innies and outies.
+    Triangle: the typical Crossword pieces where innies and outies are triangles.
     Curved: each of the borders are round curves.
     Diagonal: the borders are straight edges but at an angle.
     Straight: the borders are straight edges. So the pieces are actual rectangles or hexagons.
@@ -369,7 +369,7 @@ class BorderType(Choice):
 
 
 @dataclass
-class JigsawOptions(PerGameCommonOptions):
+class CrosswordOptions(PerGameCommonOptions):
     death_link: DeathLink
     number_of_pieces: NumberOfPieces
     grid_type_and_rotations: GridTypeAndRotations
@@ -409,7 +409,7 @@ class JigsawOptions(PerGameCommonOptions):
     rotations: Removed
     border_type: BorderType
     
-jigsaw_option_groups = [
+Crossword_option_groups = [
     OptionGroup("Important options: gameplay",
         [
             NumberOfPieces,
