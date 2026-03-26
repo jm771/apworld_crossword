@@ -41,7 +41,7 @@ class CrosswordWorld(World):
 
 
     def create_items(self):
-        vibes = 15
+        vibes = math.sqrt(21 * 11) // 1
         self.multiworld.itempool += [self.create_item("Key Crossword Item") for i in range (0 + vibes, 20 + vibes)]
         self.multiworld.itempool += [self.create_item("Non-Key Crossword Item") for i in range (0, 100 - 20)]
 
