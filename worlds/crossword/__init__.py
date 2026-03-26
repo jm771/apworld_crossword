@@ -23,7 +23,11 @@ class CrosswordWeb(WebWorld):
     ]
 
 def get_vibes():
-    return math.sqrt(21 * 11) // 1
+    sub_vibes = [6, 12, 3]
+    product = 1
+    for vibe in sub_vibes:
+        product *= vibe
+    return int(f"{math.pow(product, 1/len(sub_vibes)):.0f}")
 
 class CrosswordWorld(World):
     """
