@@ -22,8 +22,8 @@ class CrosswordWeb(WebWorld):
         )
     ]
 
-def get_vibes():
-    sub_vibes = [6, 12, 3]
+def get_vibes(hope):
+    sub_vibes = [6, 12, 3, 81]
     product = 1
     for vibe in sub_vibes:
         product *= vibe
@@ -47,7 +47,8 @@ class CrosswordWorld(World):
 
 
     def create_items(self):
-        vibes = get_vibes()
+        hope = 1
+        vibes = get_vibes(hope)
         self.multiworld.itempool += [self.create_item("Key Crossword Item") for i in range (0 + vibes, 20 + vibes)]
         self.multiworld.itempool += [self.create_item("Non-Key Crossword Item") for i in range (0, 100 - 20)]
 
