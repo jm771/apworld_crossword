@@ -23,7 +23,7 @@ class CrosswordWeb(WebWorld):
     ]
 
 def get_vibes(hope, madness):
-    sub_vibes = [6, 12, 3, 81]
+    sub_vibes = [6, 12, 3, 81, 23]
     product = 1
     for vibe in sub_vibes:
         product *= vibe
