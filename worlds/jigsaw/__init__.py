@@ -5,10 +5,10 @@ from BaseClasses import CollectionState, Entrance, Item, ItemClassification, Reg
 
 from worlds.AutoWorld import WebWorld, World
 
-from .Items import CrosswordItem, item_table, item_groups, encouragements
-from .Locations import CrosswordLocation, location_table
+from .Items import JigsawItem, item_table, item_groups, encouragements
+from .Locations import JigsawLocation, location_table
 
-from .Options import GridTypeAndRotations, CrosswordOptions, OrientationOfImage, PieceOrder, PieceTypeOrder, Crossword_option_groups, GridType
+from .Options import GridTypeAndRotations, JigsawOptions, OrientationOfImage, PieceOrder, PieceTypeOrder, jigsaw_option_groups, GridType
 from .Rules import PuzzleBoard
 
 from worlds.LauncherComponents import (
@@ -18,11 +18,11 @@ from worlds.LauncherComponents import (
 )
 
 
-class CrosswordWeb(WebWorld):
+class JigsawWeb(WebWorld):
     tutorials = [
         Tutorial(
             "Multiworld Setup Guide",
-            "A guide to setting up Crossword. This guide covers single-player, multiworld, and website.",
+            "A guide to setting up Jigsaw. This guide covers single-player, multiworld, and website.",
             "English",
             "setup_en.md",
             "setup/en",
@@ -30,21 +30,21 @@ class CrosswordWeb(WebWorld):
         )
     ]
     
-    option_groups = Crossword_option_groups
+    option_groups = jigsaw_option_groups
     
     
 
 
-class CrosswordWorld(World):
+class JigsawWorld(World):
     """
-    Make a Crossword puzzle! But first you'll have to find your pieces.
+    Make a Jigsaw puzzle! But first you'll have to find your pieces.
     Connect the pieces to unlock more. Goal: solve the puzzle of course!
     """
 
-    game: str = "Crossword"
-    options_dataclass = CrosswordOptions
+    game: str = "Jigsaw"
+    options_dataclass = JigsawOptions
 
-    web = CrosswordWeb()
+    web = JigsawWeb()
 
     item_name_to_id = {name: data.code for name, data in item_table.items()}
 
@@ -54,7 +54,7 @@ class CrosswordWorld(World):
 
     ap_world_version = "0.10.0"
 
-    def _get_Crossword_data(self):
+    def _get_jigsaw_data(self):
         return {
             "seed_name": self.multiworld.seed_name,
         }
@@ -282,7 +282,7 @@ class CrosswordWorld(World):
                         self.random.shuffle(pieces)  # shuffle the remaining pieces                     
                     
                 if p == None:
-                    raise RuntimeError("Crossword: No piece selected")
+                    raise RuntimeError("Jigsaw: No piece selected")
                 
                 # if you have merges left to unlock pieces
                 if board.merges_count > len(self.itempool_pieces) + number_of_checks_out_of_logic:
@@ -454,7 +454,7 @@ class CrosswordWorld(World):
                         filler_locations.remove(chosen_filler_loc)
                         item_locations.append(chosen_filler_loc)
                     else:
-                        raise RuntimeError("Crossword: Failed to find location.......")
+                        raise RuntimeError("Jigsaw: Failed to find location.......")
                     
                     item_locations.sort()
                     filler_locations.sort()
@@ -471,7 +471,7 @@ class CrosswordWorld(World):
                 
         # add locations to board, one for every location in the location_table
         all_locations = [
-            CrosswordLocation(self.player, f"Merge {i} times", 234782000+i, i, board)
+            JigsawLocation(self.player, f"Merge {i} times", 234782000+i, i, board)
             for i in item_locations + trap_locations
         ]
         
@@ -479,7 +479,7 @@ class CrosswordWorld(World):
         ###
         if self.options.add_fillers:
             all_locations += [
-                CrosswordLocation(self.player, f"Merge {i} times", 234782000+i, i, board)
+                JigsawLocation(self.player, f"Merge {i} times", 234782000+i, i, board)
                 for i in filler_locations
             ]
             # Generate a list of filler_locations random samples from the list encouragements
@@ -521,7 +521,7 @@ class CrosswordWorld(World):
 
     def create_item(self, name: str) -> Item:
         item_data = item_table[name]
-        item = CrosswordItem(name, item_data.classification, item_data.code, self.player)
+        item = JigsawItem(name, item_data.classification, item_data.code, self.player)
         return item
     
     def collect(self, state: "CollectionState", item: "Item") -> bool:
@@ -540,17 +540,17 @@ class CrosswordWorld(World):
 
     def fill_slot_data(self):
         """
-        make slot data, which consists of Crossword_data, options, and some other variables.
+        make slot data, which consists of jigsaw_data, options, and some other variables.
         """
-        slot_data = self._get_Crossword_data()
-        Crossword_options = self.options.as_dict(
+        slot_data = self._get_jigsaw_data()
+        jigsaw_options = self.options.as_dict(
             "which_image",
             "enable_clues",
             "total_size_of_image",
             "death_link",
             "border_type"
         )
-        slot_data = {**slot_data, **Crossword_options}  # combine the two
+        slot_data = {**slot_data, **jigsaw_options}  # combine the two
         
         slot_data["uniform_piece_size"] = self.uniform_piece_size
         slot_data["rotations"] = self.rotations
@@ -574,7 +574,7 @@ class CrosswordWorld(World):
             self.pieces_needed_per_merge.append(next(index for index, value in enumerate(self.possible_merges) if value >= i))
 
     def write_spoiler(self, spoiler_handle: TextIO) -> None:
-        spoiler_handle.write(f"\nSpoiler and info for [Crossword] player {self.player}")
+        spoiler_handle.write(f"\nSpoiler and info for [Jigsaw] player {self.player}")
         spoiler_handle.write(f"\nPuzzle dimension: {self.nx}×{self.ny}")
         spoiler_handle.write(f"\nPrecollected pieces: {len(self.precollected_pieces)}")
         # spoiler_handle.write(f"\nself.itempool_pieces {self.itempool_pieces} {len(self.itempool_pieces)}")
@@ -593,16 +593,16 @@ class CrosswordWorld(World):
         
         slot, password, host, port = match.groups()
         if password == "None":
-            webbrowser.open(f"http://Crossword-ap.netlify.app/?hostport={host}:{port}&name={slot}")
+            webbrowser.open(f"http://jigsaw-ap.netlify.app/?hostport={host}:{port}&name={slot}")
         else:
-            webbrowser.open(f"http://Crossword-ap.netlify.app/?hostport={host}:{port}&name={slot}&password={password}")
+            webbrowser.open(f"http://jigsaw-ap.netlify.app/?hostport={host}:{port}&name={slot}&password={password}")
 
     components.append(
         Component(
-            "Crossword AutoLaunch",
+            "Jigsaw AutoLaunch",
             func=open_page,
             component_type=component_type.HIDDEN,
             supports_uri=True,
-            game_name="Crossword"
+            game_name="Jigsaw"
         )
     )

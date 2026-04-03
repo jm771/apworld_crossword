@@ -7,8 +7,8 @@ class LocData(typing.NamedTuple):
     region: str
 
 
-class CrosswordLocation(Location):
-    game: str = "Crossword"
+class JigsawLocation(Location):
+    game: str = "Jigsaw"
 
     def __init__(self, player: int, name: str, address: typing.Optional[int], nmerges: int, parent):
         super().__init__(player, name, address, parent)

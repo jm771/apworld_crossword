@@ -8,8 +8,8 @@ class ItemData(typing.NamedTuple):
     code: typing.Optional[int]
     classification: ItemClassification
 
-class CrosswordItem(Item):
-    game: str = "Crossword"
+class JigsawItem(Item):
+    game: str = "Jigsaw"
     
     def __init__(self, name: str, classification: ItemClassification, code: Optional[int], player: int):
         self.name = name
