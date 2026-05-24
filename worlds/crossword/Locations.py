@@ -10,4 +10,7 @@ class CrosswordLocation(Location):
 
 MAX_N_CLUES = 1000
 
-location_table = {f"Solved a clue {i}": i for i in range(0, MAX_N_CLUES)}
+def make_location_name(i):
+    return f"Solved a clue {i}"
+
+location_table = {make_location_name(i): i for i in range(0, MAX_N_CLUES)}

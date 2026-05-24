@@ -38,5 +38,7 @@ class ParsedPuz:
 @dataclass(frozen=True)
 class SlotData:
     n_starting_clues: int
+    clues_per_reward: float
+    cross_letters_per_reward: float
     clues: list[Clue]
     cross_letters: list[CrossLetter]
