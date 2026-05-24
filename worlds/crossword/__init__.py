@@ -82,11 +82,10 @@ class CrosswordWorld(World):
         menu.locations = [CrosswordLocation(self.player, make_location_name(i), (i), menu) for i in range(n_clues)]
         n_starting = self.get_n_starting()
 
-        
-        n_clue_unlocks = get_perc(n_clues, self.options.clue_alloc_percent.value)
+        n_clue_rewards, _ = self.get_reward_split()
 
         for i, loc in enumerate(menu.locations):
-            n_items_required = math.ceil((i - n_starting + 1) * n_clue_unlocks / (n_clues - n_starting))
+            n_items_required = math.ceil((i - n_starting + 1) * n_clue_rewards / (len(menu.locations) - n_starting))
             loc.access_rule = lambda state, nitems=n_items_required: state.has("Clue Unlock", self.player, nitems) if n_items_required > 0 else lambda state: True
         
         # Change the victory location to an event and place the Victory item there.
