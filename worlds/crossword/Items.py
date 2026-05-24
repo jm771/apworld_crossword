@@ -20,6 +20,6 @@ class CrosswordItem(Item):
 
 
 item_table = {
-    "Key Crossword Item": ItemData(1, ItemClassification.progression),
-    "Non-Key Crossword Item": ItemData(2, ItemClassification.useful)
+    "Clue Unlock": ItemData(1, ItemClassification.progression),
+    "Cross Letter": ItemData(2, ItemClassification.useful)
 }

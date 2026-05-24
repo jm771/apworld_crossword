@@ -8,18 +8,18 @@ from .Items import CrosswordItem, item_table
 from .Locations import CrosswordLocation, location_table
 
 from .Options import CrosswordOptions
-
+from puz_parser import parse_puz
 
 class CrosswordWeb(WebWorld):
     tutorials = [
-        Tutorial(
-            "Multiworld Setup Guide",
-            "A guide to setting up Crossword. This guide covers single-player, multiworld, and website.",
-            "English",
-            "setup_en.md",
-            "setup/en",
-            ["Spineraks", "fariel"],
-        )
+        # Tutorial(
+        #     "Multiworld Setup Guide",
+        #     "A guide to setting up Crossword. This guide covers single-player, multiworld, and website.",
+        #     "English",
+        #     "setup_en.md",
+        #     "setup/en",
+        #     ["jm771"],
+        # )
     ]
 
 def get_vibes(hope, madness):
@@ -49,8 +49,8 @@ class CrosswordWorld(World):
     def create_items(self):
         hope = 1
         vibes = get_vibes(hope, 7)
-        self.multiworld.itempool += [self.create_item("Key Crossword Item") for i in range (0 + vibes, 20 + vibes)]
-        self.multiworld.itempool += [self.create_item("Non-Key Crossword Item") for i in range (0, 100 - 20)]
+        self.multiworld.itempool += [self.create_item("Clue Unlock") for i in range (0 + vibes, 20 + vibes)]
+        self.multiworld.itempool += [self.create_item("Cross Letter") for i in range (0, 100 - 20)]
 
     def create_regions(self):        
         menu = Region("Menu", self.player, self.multiworld)
@@ -63,10 +63,10 @@ class CrosswordWorld(World):
 
         for i, loc in enumerate(menu.locations):
             n_items_required = math.ceil((i - N_FREEBIES_GENERATOR_SIDE + 1) * N_KEY_ITEMS / (N_LOCATIONS - N_FREEBIES_GENERATOR_SIDE) )
-            loc.access_rule = lambda state, nitems=n_items_required: state.has("Key Crossword Item", self.player, nitems) if n_items_required > 0 else lambda state: True
+            loc.access_rule = lambda state, nitems=n_items_required: state.has("Clue Unlock", self.player, nitems) if n_items_required > 0 else lambda state: True
         
         
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Key Crossword Item", self.player, N_KEY_ITEMS)
+        self.multiworld.completion_condition[self.player] = lambda state: state.has("Clue Unlock", self.player, N_KEY_ITEMS)
 
         self.multiworld.regions += [menu]
 
