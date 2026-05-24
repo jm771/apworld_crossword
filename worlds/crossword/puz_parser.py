@@ -215,23 +215,3 @@ def parse_puz(data: bytes) -> Tuple[Dict[ClueId, ClueInfo], List[Tuple[str, List
                 letter_list.append((letter, associations))
 
     return clue_map, letter_list
-
-
-if __name__ == "__main__":
-    # Test with the sample file
-    with open("/home/node/NY Times - 20230101 - In Play.puz", "rb") as f:
-        data = f.read()
-
-    clue_map, letter_list = parse_puz(data)
-
-    print("Sample clues:")
-    for clue_id in list(clue_map.keys())[:5]:
-        info = clue_map[clue_id]
-        print(f"{clue_id}: {info.clue[:50]}... -> {info.answer}")
-
-    print(f"\nTotal clues: {len(clue_map)}")
-    print(f"Total letters in grid: {len(letter_list)}")
-
-    print("\nFirst 10 letters with associations:")
-    for i, (letter, associations) in enumerate(letter_list[:10]):
-        print(f"{i}: '{letter}' -> {associations}")
