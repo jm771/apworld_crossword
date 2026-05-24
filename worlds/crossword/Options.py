@@ -5,6 +5,7 @@ from Options import PerGameCommonOptions
 
 @dataclass
 class CrosswordOptions(PerGameCommonOptions):
-    pass
+    puz_file_path: str
+    puz_file_contents: str
 
  
