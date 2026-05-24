@@ -1,4 +1,5 @@
 import dataclasses
+from enum import Enum
 import math
 import random
 from typing import Optional
@@ -134,7 +135,11 @@ class CrosswordWorld(World):
         cross_letters_per_reward = (n_cross_letter_unlocks / n_cross_letter_locations) + 0.01
 
         slot_dataclass = SlotData(self.get_n_starting(), clues_per_reward, cross_letters_per_reward, self.parsed_crossword.clues, self.parsed_crossword.cross_letters)
-        return dataclasses.to_dict(slot_dataclass)
+
+        def dictfactory(data):
+            return { k: v.value if isinstance(v, Enum) else v for k, v in data}
+
+        return dataclasses.asdict(slot_dataclass, dict_factory=dictfactory)
     
     def get_n_starting(self):
         return get_perc(self.options.starting_percent.value, len(self.parsed_crossword.clues))
