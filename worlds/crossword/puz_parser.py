@@ -1,5 +1,6 @@
+from dataclasses import dataclass
 from enum import Enum
-from typing import List, Tuple, Dict
+from typing import list, tuple, dict
 
 
 class Direction(Enum):
@@ -7,33 +8,29 @@ class Direction(Enum):
     DOWN = "Down"
 
 
+@dataclass(frozen=True)
 class ClueId:
-    def __init__(self, direction: Direction, number: int):
-        self.direction = direction
-        self.number = number
-
-    def __repr__(self):
-        return f"ClueId({self.direction.value}, {self.number})"
-
-    def __eq__(self, other):
-        if not isinstance(other, ClueId):
-            return False
-        return self.direction == other.direction and self.number == other.number
-
-    def __hash__(self):
-        return hash((self.direction, self.number))
+    direction: Direction
+    number: int
 
 
+@dataclass(frozen=True)
 class ClueInfo:
-    def __init__(self, clue: str, answer: str):
-        self.clue = clue
-        self.answer = answer
+    clue: str
+    answer: str
 
-    def __repr__(self):
-        return f"ClueInfo(clue='{self.clue}', answer='{self.answer}')"
+@dataclass(frozen=True)
+class CrossLetter:
+    clue_id: ClueId
+    index: int
+    value: str
 
+@dataclass(frozen=True)
+class ParsedPuz:
+    clues: dict[ClueId, ClueInfo]
+    cross_letters: list[CrossLetter]
 
-def parse_puz(data: bytes) -> Tuple[Dict[ClueId, ClueInfo], List[Tuple[str, List[Tuple[ClueId, int]]]]]:
+def parse_puz(data: bytes) -> tuple[dict[ClueId, ClueInfo], list[tuple[str, list[tuple[ClueId, int]]]]]:
     """
     Parse a .puz file.
 
@@ -42,8 +39,8 @@ def parse_puz(data: bytes) -> Tuple[Dict[ClueId, ClueInfo], List[Tuple[str, List
 
     Returns:
         A tuple containing:
-        - Dict mapping ClueId to ClueInfo (with clue text and answer)
-        - List of letters in the grid, each with their ClueId(s) and position in answer
+        - dict mapping ClueId to ClueInfo (with clue text and answer)
+        - list of letters in the grid, each with their ClueId(s) and position in answer
     """
     # Parse header
     width = data[0x2C]
@@ -170,7 +167,7 @@ def parse_puz(data: bytes) -> Tuple[Dict[ClueId, ClueInfo], List[Tuple[str, List
                 clue_idx += 1
 
     # Build letter list with clue associations
-    letter_list = []
+    letter_list: list[string] = []
 
     for row in range(height):
         for col in range(width):
@@ -215,3 +212,8 @@ def parse_puz(data: bytes) -> Tuple[Dict[ClueId, ClueInfo], List[Tuple[str, List
                 letter_list.append((letter, associations))
 
     return clue_map, letter_list
+
+def parse_puz_for_rando(data: bytes) -> ParsedPuz:
+    clue_map, letter_list = parse_puz(data)
+    cross_letters = [CrossLetter(clueid, index, letter) for letter, locs in letter_list for clueid, index in locs]
+    return ParsedPuz(clue_map, cross_letters)
