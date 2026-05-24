@@ -1,24 +1,30 @@
 from dataclasses import dataclass
 
-from Options import FreeText, NumericOption, PerGameCommonOptions
+from Options import FreeText, NumericOption, PerGameCommonOptions, Range
 
 class FilePath(FreeText):
     pass
 
-class LetterAllocPercent(NumericOption):
+class LetterAllocPercent(Range):
     default = 100
+    range_start = 0
+    range_end = 9999999
 
-class StartingPercent(NumericOption):
+class StartingPercent(Range):
     default = 10
+    range_start = 0
+    range_end = 9999999
 
-class ClueAllocPercent(NumericOption):
+class ClueAllocPercent(Range):
     default = 110
+    range_start = 0
+    range_end = 9999999
 
 
 @dataclass
 class CrosswordOptions(PerGameCommonOptions):
     puz_file_path: FilePath
-    puz_file_contents: str
+    puz_file_contents: FreeText
     # Can be over 100%
     cross_letter_alloc_percent: LetterAllocPercent
     # How many clues at game start

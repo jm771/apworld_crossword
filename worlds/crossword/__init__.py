@@ -62,11 +62,11 @@ class CrosswordWorld(World):
 
     def generate_early(self):
         options: CrosswordOptions = self.options
-        if options.puz_file_contents:
+        if options.puz_file_contents.value:
             raise Exception("Haven't yet supported puz files contents field")
-        if not options.puz_file_path:
+        if not options.puz_file_path.value:
             raise Exception("must provide puz file path")
-        with open(options.puz_file_path, "rb") as f:
+        with open(options.puz_file_path.value, "rb") as f:
             data = f.read()
 
 
@@ -81,7 +81,7 @@ class CrosswordWorld(World):
         n_starting = self.get_n_starting()
 
         n_clues = len(self.parsed_crossword.clues)
-        n_clue_unlocks = get_perc(n_clues, self.options.clue_alloc_percent)
+        n_clue_unlocks = get_perc(n_clues, self.options.clue_alloc_percent.value)
 
         for i, loc in enumerate(menu.locations):
             n_items_required = math.ceil((i - n_starting + 1) * n_clue_unlocks / (n_clues - n_starting))
@@ -102,8 +102,8 @@ class CrosswordWorld(World):
         hope = 1
         vibes = get_vibes(hope, 7)
         options: CrosswordOptions = self.options
-        n_clue_unlocks = get_perc(len(self.parsed_crossword.clues), options.clue_alloc_percent)
-        n_cross_letter_unlocks = get_perc(len(self.pr), options.cross_letter_alloc_percent)
+        n_clue_unlocks = get_perc(len(self.parsed_crossword.clues), options.clue_alloc_percent.value)
+        n_cross_letter_unlocks = get_perc(len(self.parsed_crossword.cross_letters), options.cross_letter_alloc_percent.value)
         self.multiworld.itempool += [self.create_item("Clue Unlock") for i in range (0 + vibes, n_clue_unlocks + vibes)]
         self.multiworld.itempool += [self.create_item("Cross Letter") for i in range (0, n_cross_letter_unlocks)]
 
@@ -120,7 +120,7 @@ class CrosswordWorld(World):
         return dataclasses.to_dict(slot_dataclass)
     
     def get_n_starting(self):
-        return get_perc(self.options.starting_percent, len(self.parsed_crossword.clues))
+        return get_perc(self.options.starting_percent.value, len(self.parsed_crossword.clues))
     # def open_page(url):
     #     import webbrowser
     #     import re
