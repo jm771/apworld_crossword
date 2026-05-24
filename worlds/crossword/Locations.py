@@ -8,4 +8,6 @@ class CrosswordLocation(Location):
     def __init__(self, player: int, name: str, address: typing.Optional[int], parent):
         super().__init__(player, name, address, parent)
 
-location_table = {f"Solved some clues {i}": i for i in range(1, 101)}
+MAX_N_CLUES = 1000
+
+location_table = {f"Solved a clue {i}": i for i in range(0, MAX_N_CLUES)}

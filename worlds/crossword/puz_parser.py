@@ -1,34 +1,7 @@
-from dataclasses import dataclass
-from enum import Enum
 from typing import list, tuple, dict
 
+from worlds.crossword.Types import ClueId, ClueInfo, CrossLetter, Direction, ParsedPuz
 
-class Direction(Enum):
-    ACROSS = "Across"
-    DOWN = "Down"
-
-
-@dataclass(frozen=True)
-class ClueId:
-    direction: Direction
-    number: int
-
-
-@dataclass(frozen=True)
-class ClueInfo:
-    clue: str
-    answer: str
-
-@dataclass(frozen=True)
-class CrossLetter:
-    clue_id: ClueId
-    index: int
-    value: str
-
-@dataclass(frozen=True)
-class ParsedPuz:
-    clues: dict[ClueId, ClueInfo]
-    cross_letters: list[CrossLetter]
 
 def parse_puz(data: bytes) -> tuple[dict[ClueId, ClueInfo], list[tuple[str, list[tuple[ClueId, int]]]]]:
     """
@@ -167,7 +140,7 @@ def parse_puz(data: bytes) -> tuple[dict[ClueId, ClueInfo], list[tuple[str, list
                 clue_idx += 1
 
     # Build letter list with clue associations
-    letter_list: list[string] = []
+    letter_list = []
 
     for row in range(height):
         for col in range(width):
@@ -212,8 +185,3 @@ def parse_puz(data: bytes) -> tuple[dict[ClueId, ClueInfo], list[tuple[str, list
                 letter_list.append((letter, associations))
 
     return clue_map, letter_list
-
-def parse_puz_for_rando(data: bytes) -> ParsedPuz:
-    clue_map, letter_list = parse_puz(data)
-    cross_letters = [CrossLetter(clueid, index, letter) for letter, locs in letter_list for clueid, index in locs]
-    return ParsedPuz(clue_map, cross_letters)
