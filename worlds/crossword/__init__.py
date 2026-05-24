@@ -12,7 +12,7 @@ from .Items import CrosswordItem, item_table
 from .Locations import CrosswordLocation, location_table
 
 from .Options import CrosswordOptions
-from puz_parser import parse_puz, parse_puz_for_rando
+from .puz_parser import parse_puz
 
 class CrosswordWeb(WebWorld):
     tutorials = [
@@ -95,7 +95,7 @@ class CrosswordWorld(World):
         )
         
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
-        
+
         self.multiworld.regions += [menu]
 
     def create_items(self):

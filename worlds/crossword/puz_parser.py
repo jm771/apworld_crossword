@@ -1,6 +1,4 @@
-from typing import list, tuple, dict
-
-from worlds.crossword.Types import ClueId, ClueInfo, CrossLetter, Direction, ParsedPuz
+from .Types import ClueId, ClueInfo, CrossLetter, Direction, ParsedPuz
 
 
 def parse_puz(data: bytes) -> tuple[dict[ClueId, ClueInfo], list[tuple[str, list[tuple[ClueId, int]]]]]:
