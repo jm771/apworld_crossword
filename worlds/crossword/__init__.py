@@ -10,7 +10,7 @@ from worlds.AutoWorld import WebWorld, World
 from worlds.crossword.Types import Clue, CrossLetter, ParsedPuz, SlotData
 
 from .Items import CrosswordItem, item_table
-from .Locations import CrosswordLocation, location_table, make_location_name
+from .Locations import MAX_N_CLUES, CrosswordLocation, get_location_id, location_table, get_location_name
 
 from .Options import CrosswordOptions
 from .puz_parser import parse_puz
@@ -78,9 +78,9 @@ class CrosswordWorld(World):
     def create_regions(self):        
         menu = Region("Menu", self.player, self.multiworld)
 
-        n_clues = len(self.parsed_crossword.clues)
+        # n_clues = len(self.parsed_crossword.clues)
     
-        menu.locations = [CrosswordLocation(self.player, make_location_name(i), (i), menu) for i in range(n_clues)]
+        menu.locations = [CrosswordLocation(self.player, get_location_name(c.number, c.direction), get_location_id(c.number, c.direction), menu) for c in self.parsed_crossword.clues]
         n_starting = self.get_n_starting()
 
         n_clue_rewards, _ = self.get_reward_split()
@@ -90,18 +90,15 @@ class CrosswordWorld(World):
             loc.access_rule = lambda state, nitems=n_items_required: state.has("Clue Unlock", self.player, nitems) if n_items_required > 0 else lambda state: True
         
         # Change the victory location to an event and place the Victory item there.
-        victory_location_name = make_location_name(n_clues-1)
-        self.get_location(victory_location_name).address = None
-        self.get_location(victory_location_name).place_locked_item(
-            Item("Victory", ItemClassification.progression, None, self.player)
-        )
-        
+        victory_location = CrosswordLocation(self.player, "VictoryLocation", None, menu)
+        victory_location.place_locked_item(Item("Victory", ItemClassification.progression, None, self.player))
+        victory_location.access_rule = lambda state, nitems=n_items_required: state.has("Clue Unlock", self.player, nitems)
+        menu.locations += [victory_location]        
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
-
         self.multiworld.regions += [menu]
 
     def get_reward_split(self):
-        n_locations_for_items = len(self.parsed_crossword.clues) - 1
+        n_locations_for_items = len(self.parsed_crossword.clues) #- 1
         n_clue_locations = get_perc(n_locations_for_items, self.options.clue_item_fraction.value)
         n_cross_letter_locations = n_locations_for_items - n_clue_locations
 
