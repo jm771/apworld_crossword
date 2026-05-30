@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import FreeText, PerGameCommonOptions, Range
+from Options import Choice, FreeText, PerGameCommonOptions, Range
 
 class FilePath(FreeText):
     pass
@@ -32,11 +32,20 @@ class ClueItemFraction(Range):
     range_end = 100
     
 
+class CrossLetterGeneration(Choice):
+    option_in_puzzle = 0
+    option_all = 1
+    default = 0
+    
+
 
 @dataclass
 class CrosswordOptions(PerGameCommonOptions):
     puz_file_path: FilePath
-    puz_file_contents: FreeText
+    # Cross letter items added to the multi world are just the 
+    # letters crossed in the original puzzle, or all letters
+    # (In an American style crossword all letters are crossed anyway)
+    cross_letter_generation: CrossLetterGeneration
     # Can be over 100%
     cross_letter_alloc_percent: LetterAllocPercent
     # How many clues at game start

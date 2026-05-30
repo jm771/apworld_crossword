@@ -63,8 +63,6 @@ class CrosswordWorld(World):
 
     def generate_early(self):
         options: CrosswordOptions = self.options
-        if options.puz_file_contents.value:
-            raise Exception("Haven't yet supported puz files contents field")
         if not options.puz_file_path.value:
             raise Exception("must provide puz file path")
         with open(options.puz_file_path.value, "rb") as f:
@@ -72,6 +70,12 @@ class CrosswordWorld(World):
 
 
         self.parsed_crossword = parse_puz_for_rando(data)
+        if options.cross_letter_generation.value == 1:
+            all_cross_letters = [CrossLetter(clue.get_id(), i, letter) 
+                                 for clue in self.parsed_crossword.clues
+                                 for i, letter in enumerate(clue.answer)]
+            self.parsed_crossword = dataclasses.replace(self.parsed_crossword, cross_letters=all_cross_letters)
+
         self.random.shuffle(self.parsed_crossword.clues)
         self.random.shuffle(self.parsed_crossword.cross_letters)
 

@@ -24,6 +24,9 @@ class Clue:
     clue: str
     answer: str
 
+    def get_id(self):
+        return ClueId(self.direction, self.number)
+
 @dataclass(frozen=True)
 class CrossLetter:
     clue_id: ClueId
