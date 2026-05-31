@@ -14,7 +14,7 @@ class LetterAllocPercent(Range):
 # What fraction of clues to start with available
 class StartingPercent(Range):
     default = 10
-    range_start = 0
+    range_start = 1 #At least one clue
     range_end = 9999999
 
 # Option to overallocate how many clues are in the multiworld
@@ -28,7 +28,7 @@ class ClueAllocPercent(Range):
 # Fraction of item rewards that should be crossword clues (vs cross letters)
 class ClueItemFraction(Range):
     default = 20
-    range_start = 0
+    range_start = 1
     range_end = 100
     
 

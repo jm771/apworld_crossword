@@ -90,7 +90,10 @@ class CrosswordWorld(World):
         n_clue_rewards, _ = self.get_reward_split()
 
         for i, loc in enumerate(menu.locations):
-            n_items_required = math.ceil((i - n_starting + 1) * n_clue_rewards / (len(menu.locations) - n_starting))
+            if len(menu.locations) >= n_starting:
+                n_items_required = math.ceil((i - n_starting + 1) * n_clue_rewards / (len(menu.locations) - n_starting))
+            else:
+                n_items_required = 0
             loc.access_rule = lambda state, nitems=n_items_required: state.has("Clue Unlock", self.player, nitems) if n_items_required > 0 else lambda state: True
         
         # Change the victory location to an event and place the Victory item there.
@@ -103,7 +106,7 @@ class CrosswordWorld(World):
 
     def get_reward_split(self):
         n_locations_for_items = len(self.parsed_crossword.clues) #- 1
-        n_clue_locations = get_perc(n_locations_for_items, self.options.clue_item_fraction.value)
+        n_clue_locations = max(1, get_perc(n_locations_for_items, self.options.clue_item_fraction.value))
         n_cross_letter_locations = n_locations_for_items - n_clue_locations
 
         return n_clue_locations, n_cross_letter_locations
@@ -112,7 +115,6 @@ class CrosswordWorld(World):
         hope = 1
         vibes = get_vibes(hope, 7)
         
-        # 1 is left for "Victory"... I think...
         n_clue_locations, n_cross_letter_locations = self.get_reward_split()
 
         self.multiworld.itempool += [self.create_item("Clue Unlock") for i in range (0 + vibes, n_clue_locations + vibes)]
@@ -133,7 +135,7 @@ class CrosswordWorld(World):
         n_cross_letter_unlocks = get_perc(len(self.parsed_crossword.cross_letters), options.cross_letter_alloc_percent.value)
 
         clues_per_reward = (n_clue_unlocks / n_clue_locations) + 0.01
-        cross_letters_per_reward = (n_cross_letter_unlocks / n_cross_letter_locations) + 0.01
+        cross_letters_per_reward = (n_cross_letter_unlocks / n_cross_letter_locations) + 0.01 if n_cross_letter_locations > 0 else 0
 
         slot_dataclass = SlotData(self.get_n_starting(), clues_per_reward, cross_letters_per_reward, self.parsed_crossword.clues, self.parsed_crossword.cross_letters)
 
@@ -143,7 +145,7 @@ class CrosswordWorld(World):
         return dataclasses.asdict(slot_dataclass, dict_factory=dictfactory)
     
     def get_n_starting(self):
-        return get_perc(self.options.starting_percent.value, len(self.parsed_crossword.clues))
+        return max(1, get_perc(self.options.starting_percent.value, len(self.parsed_crossword.clues)))
     # def open_page(url):
     #     import webbrowser
     #     import re
