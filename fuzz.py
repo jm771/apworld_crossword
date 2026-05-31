@@ -172,6 +172,7 @@ def exception_in_causes(e, ty):
 
 def world_from_apworld_name(apworld_name):
     for name, world in AutoWorldRegister.world_types.items():
+        # print(world.__module__)
         if world.__module__.startswith(f"worlds.{apworld_name}"):
             return name, world
 
@@ -614,6 +615,7 @@ def call_generate(yaml_path, args, output_path):
             "csv_output": False,
             "log_time": False,
             "spoiler_only": False,
+            "allow_quantity": False,
         }
     )
     for hook in MP_HOOKS:

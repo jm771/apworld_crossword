@@ -105,8 +105,9 @@ class CrosswordWorld(World):
         self.multiworld.regions += [menu]
 
     def get_reward_split(self):
-        n_locations_for_items = len(self.parsed_crossword.clues) #- 1
-        n_clue_locations = max(1, get_perc(n_locations_for_items, self.options.clue_item_fraction.value))
+        n_locations_for_items = len(self.parsed_crossword.clues)
+        # Need to be able to put something other than clue unlock at victory location
+        n_clue_locations = min(n_locations_for_items-1, max(1, get_perc(n_locations_for_items, self.options.clue_item_fraction.value)))
         n_cross_letter_locations = n_locations_for_items - n_clue_locations
 
         return n_clue_locations, n_cross_letter_locations
@@ -135,7 +136,7 @@ class CrosswordWorld(World):
         n_cross_letter_unlocks = get_perc(len(self.parsed_crossword.cross_letters), options.cross_letter_alloc_percent.value)
 
         clues_per_reward = (n_clue_unlocks / n_clue_locations) + 0.01
-        cross_letters_per_reward = (n_cross_letter_unlocks / n_cross_letter_locations) + 0.01 if n_cross_letter_locations > 0 else 0
+        cross_letters_per_reward = (n_cross_letter_unlocks / n_cross_letter_locations) + 0.01 if options.clue_item_fraction < 100 else 0
 
         slot_dataclass = SlotData(self.get_n_starting(), clues_per_reward, cross_letters_per_reward, self.parsed_crossword.clues, self.parsed_crossword.cross_letters)
 
