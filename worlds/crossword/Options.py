@@ -14,8 +14,8 @@ class LetterAllocPercent(Range):
 # What fraction of clues to start with available
 class StartingPercent(Range):
     default = 10
-    range_start = 1 #At least one clue
-    range_end = 9999999
+    range_start = 1 #At least one clue is required
+    range_end = 100
 
 # Option to overallocate how many clues are in the multiworld
 # (This applies to non-starting clues)
