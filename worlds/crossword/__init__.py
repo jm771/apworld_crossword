@@ -90,7 +90,7 @@ class CrosswordWorld(World):
         n_clue_rewards, _ = self.get_reward_split()
 
         for i, loc in enumerate(menu.locations):
-            if len(menu.locations) >= n_starting:
+            if len(menu.locations) > n_starting:
                 n_items_required = math.ceil((i - n_starting + 1) * n_clue_rewards / (len(menu.locations) - n_starting))
             else:
                 n_items_required = 0
