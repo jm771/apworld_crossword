@@ -1,8 +1,10 @@
+import base64
 import dataclasses
 from enum import Enum
 import math
 import random
 from typing import Optional
+import zlib
 
 from BaseClasses import Item, ItemClassification, Region, Tutorial
 
@@ -63,10 +65,15 @@ class CrosswordWorld(World):
 
     def generate_early(self):
         options: CrosswordOptions = self.options
-        if not options.puz_file_path.value:
-            raise Exception("must provide puz file path")
-        with open(options.puz_file_path.value, "rb") as f:
-            data = f.read()
+        if (bool(options.puz_file_path.value) == bool(options.puz_file_contents.value)):
+            raise Exception("must provide exactly one of puz_file_path or puz_file_contents")
+
+        if options.puz_file_path.value:                
+            with open(options.puz_file_path.value, "rb") as f:
+                data = f.read()
+        else:
+            compressed_data = base64.b64decode(options.puz_file_contents.value)
+            data = zlib.decompress(compressed_data)
 
 
         self.parsed_crossword = parse_puz_for_rando(data)
