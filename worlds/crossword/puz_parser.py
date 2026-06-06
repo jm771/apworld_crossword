@@ -30,7 +30,7 @@ def parse_puz(data: bytes) -> tuple[dict[ClueId, ClueInfo], list[tuple[str, list
         end = offset
         while data[end] != 0:
             end += 1
-        return data[offset:end].decode('latin-1'), end + 1
+        return data[offset:end].decode('utf-8'), end + 1
 
     # Read title, author, copyright
     title, strings_offset = read_string(strings_offset)
