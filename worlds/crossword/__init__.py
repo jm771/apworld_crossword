@@ -15,7 +15,7 @@ from .Items import CrosswordItem, item_table
 from .Locations import MAX_N_CLUES, CrosswordLocation, get_location_id, location_table, get_location_name
 
 from .Options import CrosswordOptions
-from .puz_parser import parse_puz
+from .puz_parser import parse_grid_layout, parse_puz
 
 class CrosswordWeb(WebWorld):
     tutorials = [
@@ -62,6 +62,7 @@ class CrosswordWorld(World):
     ap_world_version = "0.0.0"
 
     parsed_crossword: Optional[ParsedPuz]
+    grid_layout: Optional[dict]
 
     def generate_early(self):
         options: CrosswordOptions = self.options
@@ -77,6 +78,7 @@ class CrosswordWorld(World):
 
 
         self.parsed_crossword = parse_puz_for_rando(data)
+        self.grid_layout = parse_grid_layout(data)
         if options.cross_letter_generation.value == 1:
             all_cross_letters = [CrossLetter(clue.get_id(), i, letter) 
                                  for clue in self.parsed_crossword.clues
@@ -145,7 +147,8 @@ class CrosswordWorld(World):
         clues_per_reward = (n_clue_unlocks / n_clue_locations) + 0.01
         cross_letters_per_reward = (n_cross_letter_unlocks / n_cross_letter_locations) + 0.01 if options.clue_item_fraction < 100 else 0
 
-        slot_dataclass = SlotData(self.get_n_starting(), clues_per_reward, cross_letters_per_reward, self.parsed_crossword.clues, self.parsed_crossword.cross_letters)
+        slot_dataclass = SlotData(self.get_n_starting(), clues_per_reward, cross_letters_per_reward, self.parsed_crossword.clues, self.parsed_crossword.cross_letters,
+                                 self.grid_layout, bool(options.show_grid.value))
 
         def dictfactory(data):
             return { k: v.value if isinstance(v, Enum) else v for k, v in data}
