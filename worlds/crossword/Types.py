@@ -45,3 +45,7 @@ class SlotData:
     cross_letters_per_reward: float
     clues: list[Clue]
     cross_letters: list[CrossLetter]
+    # Grid shape without letters (see puz_parser.parse_grid_layout), so clients can draw the puzzle
+    grid: dict
+    # Whether clients show the grid during play; they may always show it once the puzzle is solved
+    show_grid: bool

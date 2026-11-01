@@ -1,6 +1,40 @@
 from .Types import ClueId, ClueInfo, CrossLetter, Direction, ParsedPuz
 
 
+def parse_grid_layout(data: bytes) -> dict:
+    """
+    Grid shape of a .puz file, without the solution letters.
+
+    Returns a dict with width, height, layout (one string per row, '#' = black square,
+    '-' = letter square), circles (indices of circled squares), title and author.
+    """
+    width = data[0x2C]
+    height = data[0x2D]
+    grid_size = width * height
+    solution = data[0x34:0x34 + grid_size].decode('latin-1')
+    layout = ["".join('#' if ch == '.' else '-' for ch in solution[row * width:(row + 1) * width])
+              for row in range(height)]
+
+    def decode(raw):
+        try:
+            return raw.decode('utf-8')
+        except UnicodeDecodeError:
+            return raw.decode('latin-1')
+
+    strings_offset = 0x34 + 2 * grid_size
+    title, author = (decode(s) for s in data[strings_offset:].split(b'\0', 2)[:2])
+
+    # GEXT extension holds per-square markup; 0x80 marks a circled square
+    circles = []
+    gext = data.find(b'GEXT', strings_offset)
+    if gext != -1:
+        markup = data[gext + 8:gext + 8 + grid_size]
+        circles = [i for i, flags in enumerate(markup) if flags & 0x80]
+
+    return {"width": width, "height": height, "layout": layout, "circles": circles,
+            "title": title, "author": author}
+
+
 def parse_puz(data: bytes) -> tuple[dict[ClueId, ClueInfo], list[tuple[str, list[tuple[ClueId, int]]]]]:
     """
     Parse a .puz file.

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, FreeText, PerGameCommonOptions, Range
+from Options import Choice, FreeText, PerGameCommonOptions, Range, Toggle
 
 class FilePath(FreeText):
     pass
@@ -13,6 +13,15 @@ class LetterAllocPercent(Range):
     default = 100
     range_start = 0
     range_end = 9999999
+
+# Whether clients show the grid while playing (it's always sent so clients can show it at the end)
+class ShowGrid(Toggle):
+    """
+    Show the crossword grid while playing, so you can see where answers cross.
+    This makes the game a lot easier, since crossings give away letters on top of the Cross Letter items.
+    Off: clues only during play; clients can still show the grid once the puzzle is solved.
+    """
+    display_name = "Show Grid"
 
 # What fraction of clues to start with available
 class StartingPercent(Range):
@@ -54,6 +63,8 @@ class CrosswordOptions(PerGameCommonOptions):
     starting_percent: StartingPercent
     clue_alloc_percent: ClueAllocPercent
     clue_item_fraction: ClueItemFraction
+
+    show_grid: ShowGrid
     
     #Exactly 1 of these two
     puz_file_path: FilePath
